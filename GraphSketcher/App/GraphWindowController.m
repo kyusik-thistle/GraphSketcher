@@ -432,7 +432,6 @@
     
     [self saveGraphFrame];
     
-    [[self document] closeLinkBackConnection];
     
     // Unregister KVO, etc.
     [self documentGraphDidChange:nil];

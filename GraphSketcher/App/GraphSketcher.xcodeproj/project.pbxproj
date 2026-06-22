@@ -12,7 +12,6 @@
 		0007DFA20F990D440074EDCD /* ungroupIcon.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0007DFA10F990D440074EDCD /* ungroupIcon.tiff */; };
 		0007DFA60F990DDF0074EDCD /* lockIcon.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0007DFA40F990DDF0074EDCD /* lockIcon.tiff */; };
 		0007DFA70F990DDF0074EDCD /* unlockIcon.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0007DFA50F990DDF0074EDCD /* unlockIcon.tiff */; };
-		00098921102A61C100D5B559 /* LinkBack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00098920102A61C100D5B559 /* LinkBack.framework */; };
 		000D19870EDB207D00383C12 /* RSFillTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 000D19860EDB207D00383C12 /* RSFillTool.m */; };
 		000F12620F6AD171001BBCEB /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = 000F12600F6AD171001BBCEB /* Credits.html */; };
 		000F14130F6B2481001BBCEB /* inspectorIcon.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 000F14120F6B2481001BBCEB /* inspectorIcon.tiff */; };
@@ -157,7 +156,6 @@
 		5F1A942B1857AE62009A1111 /* OmniBase.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 34874C220EA7D5380012BB56 /* OmniBase.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		5F1A942C1857AE62009A1111 /* OmniFoundation.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 34874C240EA7D5380012BB56 /* OmniFoundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		5F1A942D1857AE62009A1111 /* OmniUnzip.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 003A17910FC376DD0055EE51 /* OmniUnzip.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		5F1A942E1857AE62009A1111 /* LinkBack.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 00098920102A61C100D5B559 /* LinkBack.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		5F1A942F1857AE62009A1111 /* OmniQuartz.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 34830833111A7C54000BEB55 /* OmniQuartz.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		8D15AC320486D014006FF6A4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4B0FDCFA73011CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
@@ -243,7 +241,6 @@
 				5F1A942B1857AE62009A1111 /* OmniBase.framework in Copy Frameworks */,
 				5F1A942C1857AE62009A1111 /* OmniFoundation.framework in Copy Frameworks */,
 				5F1A942D1857AE62009A1111 /* OmniUnzip.framework in Copy Frameworks */,
-				5F1A942E1857AE62009A1111 /* LinkBack.framework in Copy Frameworks */,
 				5F1A942F1857AE62009A1111 /* OmniQuartz.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
@@ -257,7 +254,6 @@
 		0007DFA10F990D440074EDCD /* ungroupIcon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ungroupIcon.tiff; sourceTree = "<group>"; };
 		0007DFA40F990DDF0074EDCD /* lockIcon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = lockIcon.tiff; sourceTree = "<group>"; };
 		0007DFA50F990DDF0074EDCD /* unlockIcon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = unlockIcon.tiff; sourceTree = "<group>"; };
-		00098920102A61C100D5B559 /* LinkBack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = LinkBack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		000D19850EDB207D00383C12 /* RSFillTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSFillTool.h; sourceTree = "<group>"; };
 		000D19860EDB207D00383C12 /* RSFillTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSFillTool.m; sourceTree = "<group>"; };
 		000F12610F6AD171001BBCEB /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = English; path = English.lproj/Credits.html; sourceTree = "<group>"; };
@@ -476,7 +472,6 @@
 				009094E80EF096FA00350081 /* OmniInspector.framework in Frameworks */,
 				003A17920FC376DD0055EE51 /* OmniUnzip.framework in Frameworks */,
 				00644C740FDF1F1B00F19586 /* QuartzCore.framework in Frameworks */,
-				00098921102A61C100D5B559 /* LinkBack.framework in Frameworks */,
 				34830834111A7C54000BEB55 /* OmniQuartz.framework in Frameworks */,
 				3402C1FC111A87370046638B /* GraphSketcherModel.framework in Frameworks */,
 			);
@@ -778,7 +773,6 @@
 				34874C220EA7D5380012BB56 /* OmniBase.framework */,
 				34874C240EA7D5380012BB56 /* OmniFoundation.framework */,
 				003A17910FC376DD0055EE51 /* OmniUnzip.framework */,
-				00098920102A61C100D5B559 /* LinkBack.framework */,
 				1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */,
 				00D6B4320D4D399300DD5CFA /* SystemConfiguration.framework */,
 				0097A8510ED4C01000413A12 /* Carbon.framework */,

@@ -229,13 +229,8 @@
     [self checkMessageOfTheDay];
     
     [self startedRunning];
-    
-    if (LINKBACK_ENABLED) {
-        [LinkBack publishServerWithName:OGSLinkBackServerName bundleIdentifier:@"com.graphsketcher.GraphSketcher" delegate:self];
-        [LinkBack publishServerWithName:OGSLinkBackServerName bundleIdentifier:@"com.graphsketcher.GraphSketcher.MacAppStore" delegate:self];
-    }
-    
-    
+
+
     // I'm going to turn this off because it appears to be fixing a 10.4 bug, and I'd rather not force users' computers to rebuild metadata unnecessarily.
     //RebuildSpotlightIndexIfNewerMetadataImporter();
 }
@@ -264,47 +259,6 @@
     [super applicationWillTerminate:notification];
 }
 
-
-
-/////////////////////////////////////////
-#pragma mark -
-#pragma mark LinkBackServerDelegate protocol
-/////////////////////////////////////////
-
-- (void)linkBackClientDidRequestEdit:(LinkBack*)link ;
-// When a client requests an edit of your application data, your server delegate will receive the -linkBackClientDidRequestEdit: message.  The object passed in is an instance of the LinkBack class.  This represents a single connection between the client and the server application.  You should respond to this message by either opening the data for editing or by automatically refreshing the data.
-{
-    // Much of this copied from OmniGraffle's LiveLinkHelper
-    GraphDocument *document = [link representedObject];
-    if (document == nil) {
-        NSError *errBuf = nil;
-        document = [[NSDocumentController sharedDocumentController] openUntitledDocumentAndDisplay:NO error:&errBuf];
-        if (!document) {
-            // LinkBack doesn't support NSError returns, but it's DO, so it should handle exceptions
-            [[NSException exceptionWithName:NSGenericException reason:[errBuf localizedDescription] userInfo:[NSDictionary dictionaryWithObject:errBuf forKey:@"NSError"]] raise];
-        }
-        [link setRepresentedObject:document];
-        [document setLinkBack:link];
-    }
-    
-    // display the document
-    if (![[document windowControllers] count])
-        [document makeWindowControllers];
-    [document showWindows];
-    
-    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
-}
-
-- (void)linkBackDidClose:(LinkBack*)link ;
-{
-    GraphDocument *document = [link representedObject];
-    if ([document linkBack] == link) {
-        [document linkBackConnectionDidClose:link];
-    } else {
-        OBASSERT_NOT_REACHED("Got linkBackDidClose: from a link that we don't think is open");
-        [link setRepresentedObject:nil];
-    }
-}
 
 
 /////////////////////////////////////////

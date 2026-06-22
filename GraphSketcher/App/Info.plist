@@ -53,10 +53,6 @@
 	<string>public.app-category.productivity</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.8</string>
-	<key>LinkBackApplicationURL</key>
-	<string>http://www.graphsketcher.com/</string>
-	<key>LinkBackServer</key>
-	<string>GraphSketcher</string>
 	<key>NSAppleScriptEnabled</key>
 	<string>NO</string>
 	<key>NSHumanReadableCopyright</key>
