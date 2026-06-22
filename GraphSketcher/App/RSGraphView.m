@@ -58,9 +58,13 @@
 - (void)updateTrackingAreas;
 {
     [super updateTrackingAreas];
-    
-    [self removeTrackingRect:_trackingRectTag];
-    _trackingRectTag = [self addTrackingRect:[self bounds] owner:self 
+
+    // Only remove an existing tracking rect. On the first call _trackingRectTag is 0; on modern
+    // macOS removeTrackingRect: with an invalid tag trips an internal assertion (which Omni's
+    // assertion handler escalates into a crash-handler loop, appearing as a launch hang).
+    if (_trackingRectTag != 0)
+        [self removeTrackingRect:_trackingRectTag];
+    _trackingRectTag = [self addTrackingRect:[self bounds] owner:self
                                     userData:nil assumeInside:NO];
 }
 
