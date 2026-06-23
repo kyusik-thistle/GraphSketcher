@@ -28,7 +28,7 @@
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleGetInfoString</key>
-	<string>$(PRODUCT_NAME) MARKETING_VERSION, version FULL_BUNDLE_VERSION, © COPYRIGHT_YEARS The Omni Group</string>
+	<string>$(PRODUCT_NAME) 2.0, version 46, © 2003-2014 The Omni Group</string>
 	<key>CFBundleHelpBookFolder</key>
 	<string>$(PRODUCT_NAME) Help</string>
 	<key>CFBundleHelpBookName</key>
@@ -44,11 +44,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>MARKETING_VERSION</string>
+	<string>2.0</string>
 	<key>CFBundleSignature</key>
 	<string>RSGS</string>
 	<key>CFBundleVersion</key>
-	<string>FULL_BUNDLE_VERSION</string>
+	<string>46</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.productivity</string>
 	<key>LSMinimumSystemVersion</key>
@@ -56,7 +56,7 @@
 	<key>NSAppleScriptEnabled</key>
 	<string>NO</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>© COPYRIGHT_YEARS The Omni Group</string>
+	<string>© 2003-2014 The Omni Group</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
@@ -71,6 +71,8 @@
 		<dict>
 			<key>defaultsDictionary</key>
 			<dict>
+				<key>AppleMeasurementUnits</key>
+				<string>Inches</string>
 				<key>AutoScaleRangeOnImport</key>
 				<false/>
 				<key>AutosaveDelaySeconds</key>
