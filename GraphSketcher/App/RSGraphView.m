@@ -3212,54 +3212,79 @@ static NSData *imageIOData(NSData *sourceData, NSString *type)
     return [image autorelease];
 }
 
+// 4x is the scale used for the raster (PNG/TIFF/JPEG) representations -- on "Copy As Image" and on
+// file export. The old code captured the on-screen view at 1x via -lockFocus/
+// -initWithFocusedViewRect: (both deprecated as of macOS 10.14), which pasted/exported blurry;
+// rasterizing at 4x restores high resolution.
+#define RS_RASTER_EXPORT_SCALE 4.0
+
+// Renders the graph inside `r` to a bitmap at `scale`x the on-screen point resolution by rasterizing
+// the (vector, resolution-independent) PDF representation. Pass a non-nil backgroundColor for
+// formats without an alpha channel (JPEG); pass nil to preserve transparency (PNG/TIFF). The caller
+// owns the returned rep (this file is non-ARC).
+- (NSBitmapImageRep *)bitmapImageRepInsideRect:(NSRect)r scale:(CGFloat)scale backgroundColor:(NSColor *)backgroundColor;
+{
+    NSPDFImageRep *pdfRep = [NSPDFImageRep imageRepWithData:[self dataWithPDFInsideRect:r]];
+
+    NSInteger pixelsWide = (NSInteger)ceil(r.size.width * scale);
+    NSInteger pixelsHigh = (NSInteger)ceil(r.size.height * scale);
+    if (pixelsWide < 1)
+        pixelsWide = 1;
+    if (pixelsHigh < 1)
+        pixelsHigh = 1;
+
+    NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
+                                                                    pixelsWide:pixelsWide
+                                                                    pixelsHigh:pixelsHigh
+                                                                 bitsPerSample:8
+                                                               samplesPerPixel:4
+                                                                      hasAlpha:YES
+                                                                      isPlanar:NO
+                                                                colorSpaceName:NSCalibratedRGBColorSpace
+                                                                   bytesPerRow:0
+                                                                  bitsPerPixel:0];
+    // Keep the logical size in points; the bitmap then has `scale`x pixel density, so drawing in
+    // point coordinates below fills the full pixel grid at high resolution.
+    [rep setSize:r.size];
+
+    NSGraphicsContext *context = [NSGraphicsContext graphicsContextWithBitmapImageRep:rep];
+    [NSGraphicsContext saveGraphicsState];
+    [NSGraphicsContext setCurrentContext:context];
+    {
+        NSRect destRect = NSMakeRect(0.0, 0.0, r.size.width, r.size.height);
+        if (backgroundColor != nil) {
+            [backgroundColor set];
+            NSRectFill(destRect);
+        }
+        [pdfRep drawInRect:destRect];
+    }
+    [NSGraphicsContext restoreGraphicsState];
+
+    return rep;
+}
+
 - (NSData *)dataWithPNGInsideRect:(NSRect)r
 {
-    [self lockFocus];
-    [self drawRect:[self bounds]];
-    NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithFocusedViewRect:r];
-    [self unlockFocus];
-    
-    NSData *imgData = [rep representationUsingType:NSPNGFileType properties:
-		       [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:NSImageInterlaced]];
-    
+    NSBitmapImageRep *rep = [self bitmapImageRepInsideRect:r scale:RS_RASTER_EXPORT_SCALE backgroundColor:nil];
+    NSData *imgData = [rep representationUsingType:NSBitmapImageFileTypePNG properties:@{NSImageInterlaced: @NO}];
     [rep release];
-    
-    [self setNeedsDisplay:YES];
     return imgData;
-    
-//    NSImage *image = [self bitmapImage];
-//    [self setNeedsDisplay:YES];
-//    return imageIOData([image TIFFRepresentation], @"PNG");
 }
 
 - (NSData *)dataWithJPGInsideRect:(NSRect)r
 {
-    [self lockFocus];
-    [self drawRect:[self bounds]];
-    NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithFocusedViewRect:r];
-    [self unlockFocus];
-    
-    NSData *jpegData = [rep representationUsingType:NSJPEGFileType properties:
-			[NSDictionary dictionaryWithObject:[NSNumber numberWithDouble:1] forKey:NSImageCompressionFactor]];
-    
+    // JPEG has no alpha channel; composite onto white so transparent areas don't render as black.
+    NSBitmapImageRep *rep = [self bitmapImageRepInsideRect:r scale:RS_RASTER_EXPORT_SCALE backgroundColor:[NSColor whiteColor]];
+    NSData *jpegData = [rep representationUsingType:NSBitmapImageFileTypeJPEG properties:@{NSImageCompressionFactor: @1.0}];
     [rep release];
-    
-    [self setNeedsDisplay:YES];
     return jpegData;
 }
 
 - (NSData *)dataWithTIFFInsideRect:(NSRect)r
 {
-    [self lockFocus];
-    [self drawRect:[self bounds]];
-    NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithFocusedViewRect:r];
-    [self unlockFocus];
-    
+    NSBitmapImageRep *rep = [self bitmapImageRepInsideRect:r scale:RS_RASTER_EXPORT_SCALE backgroundColor:nil];
     NSData *tiffData = [rep TIFFRepresentation];
-    
     [rep release];
-    
-    [self setNeedsDisplay:YES];
     return tiffData;
 }
 

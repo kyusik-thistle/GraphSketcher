@@ -600,29 +600,21 @@ NSString *RSErrorDomain = @"OmniGraphSketcher Error Domain";
 
 - (IBAction)copyAsImageWithPasteboard:(NSPasteboard *)pb;
 {
-    // relevant pboard types:
-    // NSPDFPboardType, NSTIFFPboardType, NSPICTPboardType
-    
     [_graphView commitEditing];
     [_graphView setDrawingToScreen:NO];
-    
+
     NSRect r = [_graphView bounds];
-    
-    // Declare types
-    NSArray *pbTypes = [NSArray arrayWithObjects:NSPDFPboardType, kUTTypePNG, NSTIFFPboardType, nil];
+
+    // Offer the graph as vector PDF plus high-resolution PNG and TIFF. PDF is first so vector-aware
+    // consumers (Pages/Keynote) get the resolution-independent version; apps that only accept a
+    // raster (e.g. web apps like Google Docs) fall back to the high-res PNG/TIFF.
+    NSArray<NSPasteboardType> *pbTypes = @[NSPasteboardTypePDF, NSPasteboardTypePNG, NSPasteboardTypeTIFF];
     [pb declareTypes:pbTypes owner:_graphView];
-    
-    // Copy data to the pasteboard
-    [pb setData: [_graphView dataWithPDFInsideRect: r]
-	forType: NSPDFPboardType];
-    
-    [pb setData: [_graphView dataWithPNGInsideRect: r]
-	forType: (NSString *)kUTTypePNG];  // NSPasteboardTypePNG is defined in Mac OS X 10.6 and up
-    
-    [pb setData: [_graphView dataWithTIFFInsideRect: r]
-	forType: NSTIFFPboardType];
-    
-    // And we're done
+
+    [pb setData:[_graphView dataWithPDFInsideRect:r] forType:NSPasteboardTypePDF];
+    [pb setData:[_graphView dataWithPNGInsideRect:r] forType:NSPasteboardTypePNG];
+    [pb setData:[_graphView dataWithTIFFInsideRect:r] forType:NSPasteboardTypeTIFF];
+
     [_graphView setDrawingToScreen:YES];
 }
 
