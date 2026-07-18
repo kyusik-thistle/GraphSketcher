@@ -185,6 +185,12 @@
 				<true/>
 				<key>IncludeQuicklookPreview</key>
 				<true/>
+				<!-- Default OmniInspector workspace state: open the (tabbed) inspector panel expanded on a fresh install. Once the user toggles the panel, their saved state in this same "Inspector" defaults key takes precedence. -->
+				<key>Inspector</key>
+				<dict>
+					<key>com.graphsketcher.GraphSketcher.inspector</key>
+					<true/>
+				</dict>
 				<key>LastCanvasSize</key>
 				<string>{520, 420}</string>
 				<key>LastFrameString</key>
@@ -226,6 +232,9 @@
 			</dict>
 		</dict>
 	</dict>
+	<!-- Render with the pre-macOS 26 design (classic toolbar metrics and controls), matching the original app. Apple documents this key as a temporary compatibility opt-out for apps built with the macOS 26 SDK. -->
+	<key>UIDesignRequiresCompatibility</key>
+	<true/>
 	<key>UTExportedTypeDeclarations</key>
 	<array>
 		<dict>
