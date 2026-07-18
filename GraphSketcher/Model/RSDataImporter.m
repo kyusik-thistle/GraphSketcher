@@ -37,7 +37,7 @@ static NSString *nameFromColumnType(NSInteger type) {
 #endif
 
 // Ensure that the value in the user preference is reasonable.
-static NSUInteger maximumDataSetSize() {
+static NSUInteger maximumDataSetSize(void) {
     NSInteger maxDataSetSize = [[OFPreferenceWrapper sharedPreferenceWrapper] integerForKey:@"MaximumDataSetSize"];
     
     // Make sure there's *some* limit even if prefs are messed up
@@ -410,7 +410,7 @@ static NSUInteger columnTypeForCell(NSString *cell) {
     if( checkEnd > 30 )
 	checkEnd = 30;  // check up to 30 rows, not including header
     
-    NSUInteger rowsAnalyzed = 0;
+    __unused NSUInteger rowsAnalyzed = 0;  // only read by DEBUG_DATA_IMPORT logging
     NSUInteger i;
     for( i=checkStart; i<checkEnd; i++ ) {
 	NSArray *row = [table objectAtIndex:i];

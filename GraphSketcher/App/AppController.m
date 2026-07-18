@@ -170,10 +170,11 @@
 
 - (void)applicationWillFinishLaunching:(NSNotification *)notification;
 {
-    [NSColor setIgnoresAlpha:NO];
-    
-    [[OFController sharedController] didInitialize];
-    
+    // Show opacity controls in the color panel (replaces the deprecated [NSColor setIgnoresAlpha:NO]).
+    [[NSColorPanel sharedColorPanel] setShowsAlpha:YES];
+
+    // -[OAController applicationWillFinishLaunching:] (called via super below) invokes -didInitialize for us.
+
     // Add a menu of experimental features if the preference for it is turned on.
     if ([[OFPreferenceWrapper sharedPreferenceWrapper] boolForKey:@"ShowExperimentalFeaturesMenu"]) {
         NSMenu *experimentalMenu = [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Experimental", @"Menu item")];
@@ -227,9 +228,8 @@
     }
     
     [self checkMessageOfTheDay];
-    
-    [self startedRunning];
 
+    // -[OAController applicationDidFinishLaunching:] (called via super above) invokes -startedRunning for us.
 
     // I'm going to turn this off because it appears to be fixing a 10.4 bug, and I'd rather not force users' computers to rebuild metadata unnecessarily.
     //RebuildSpotlightIndexIfNewerMetadataImporter();
@@ -237,25 +237,15 @@
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender;
 {
-    [super applicationShouldTerminate:sender];
-    
     // TODO: End editing in any open documents to commit any pending changes
 
-    switch ([self requestTermination]) {
-        case OFControllerTerminateCancel:
-            return NSTerminateCancel;
-        case OFControllerTerminateLater:
-            return NSTerminateLater;
-        case OFControllerTerminateNow:
-        default:
-	    return NSTerminateNow;
-    }
+    // -[OAController applicationShouldTerminate:] invokes -requestTermination and maps the reply.
+    return [super applicationShouldTerminate:sender];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification;
 {
-    [self willTerminate];
-    
+    // -[OAController applicationWillTerminate:] invokes -willTerminate for us.
     [super applicationWillTerminate:notification];
 }
 
@@ -413,8 +403,9 @@
 
 - (IBAction)openKeyboardShortcuts:(id)sender;
 {
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"GraphSketcher Keyboard Shortcuts" ofType:@"pdf"];
-    [[NSWorkspace sharedWorkspace] openFile:path];// withApplication:@"Preview"];
+    NSURL *url = [[NSBundle mainBundle] URLForResource:@"GraphSketcher Keyboard Shortcuts" withExtension:@"pdf"];
+    if (url != nil)
+        [[NSWorkspace sharedWorkspace] openURL:url];
 }
 
 - (IBAction)importData:(id)sender;
@@ -500,9 +491,9 @@
     }
     else if (action == @selector(demoPenMode:)) {
 	if ( [[OFPreferenceWrapper sharedPreferenceWrapper] boolForKey:@"DrawCurvedLines"] ) {
-	    [menuItem setState:NSOnState];
+	    [menuItem setState:NSControlStateValueOn];
 	} else {
-	    [menuItem setState:NSOffState];
+	    [menuItem setState:NSControlStateValueOff];
 	}
 	
 	return YES;
