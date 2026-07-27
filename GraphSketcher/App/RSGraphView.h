@@ -100,6 +100,7 @@
 
 // Text handling:
 - (void)processTextChange;
+- (void)commitPendingTextEdit;
 - (void)startEditingLabel;
 - (RSTextLabel *)stopEditingLabel;
 - (void)revertEditsForLabel:(RSTextLabel *)TL;

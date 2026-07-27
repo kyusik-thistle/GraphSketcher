@@ -1366,6 +1366,26 @@ BOOL showWhaBam = NO;
     // Delaying with [self queueSelectorOnce:@selector(processTextChange)]; results in a flicker as the tentative characters are displayed in their wrapped position before the frame change is called.
     
     _textViewNeedsUpdate = YES;
+
+    // Ask for the redraw that runs -processTextChange.  Before 10.14, redrawing the transparent field
+    // editor subview forced the graph view underneath it to redraw too, so this happened for free on
+    // every keystroke.  Now that every view in the window is layer-backed, the field editor redraws
+    // into its own layer and the graph view is never marked dirty, so -viewWillDraw never runs.
+    [self setNeedsDisplay:YES];
+}
+
+- (void)commitPendingTextEdit;
+// Push the field editor's contents into the model label.  -processTextChange normally runs from
+// -viewWillDraw while the user types, but drawing is never guaranteed (an occluded or minimized window
+// doesn't draw at all), so every path that finishes an edit has to commit explicitly instead of
+// assuming a redraw happened.  Idempotent: -processTextChange is a no-op once the strings match.
+{
+    if (!_textView)
+        return;
+    if (_discardingEditing)  // "esc" is about to put the snapshot back; don't bother
+        return;
+
+    [self processTextChange];
 }
 
 //- (void)textDidChange:(NSNotification *)note;
@@ -1379,6 +1399,9 @@ BOOL showWhaBam = NO;
     //DEBUG_RS(@"RSGraphView handling textDidEndEditing");
     RSTextLabel *TL = (RSTextLabel *)[_s selection];
     RSGraph *graph = _editor.graph;
+
+    // Commit before reading the label's text below, and before the field editor is torn down.
+    [self commitPendingTextEdit];
     
     if ( _textView && [graph isAxisEndLabel:TL] ) {
 	
@@ -1459,11 +1482,20 @@ BOOL showWhaBam = NO;
     //new text editing//
     OBASSERT([_s selected] && [[_s selection] isKindOfClass:[RSTextLabel class]]);
     RSTextLabel *TL = (RSTextLabel *)[_s selection];
-    
+
+    // Catch the exit paths that don't come through -textDidEndEditing: (clicking away, switching tools,
+    // -commitEditing before a save).
+    [self commitPendingTextEdit];
+
     // clear out undos related to the field editor
     [[_editor.undoer undoManager] removeAllActionsWithTarget:_textView];
     [[_editor.undoer undoManager] removeAllActionsWithTarget:[_textView textStorage]];
-    
+
+    // The field editor is shared with the rest of the window, so stop listening to it before handing it
+    // back; otherwise AppKit clearing it out leaves _textViewNeedsUpdate stranded at YES.
+    [[_textView textStorage] setDelegate:nil];
+    _textViewNeedsUpdate = NO;
+
     [_textView removeFromSuperviewWithoutNeedingDisplay];  // is this necessary?
     [[self window] endEditingFor:[_s selection]];
     
