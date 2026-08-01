@@ -117,17 +117,22 @@
     // Clean up old graph, if it exists
     if (_graph) {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        
+
+        // Detach the view from the editor while the editor is still valid.  This is the counterpart of
+        // the assignment below, and -windowWillClose: gets here before the document is deallocated, so
+        // the tools (which hold the editor's mapper/renderer/graph without retaining them) are released
+        // before -[GraphDocument dealloc] invalidates the editor out from under them.
+        _graphView.editor = nil;
+
         // Clear out KVO in the inspector panels
         [[[AppController sharedController] inspectorRegistry] clearInspectionSet];
-        
+
         // KVO
         [_graph removeObserver:self forKeyPath:@"canvasSize"];
         [_graph removeObserver:self forKeyPath:@"whitespace"];
-        
+
         [pool release];
-        
-        //[_graphView setGraph:nil];
+
         [_graph release];
     }
     
