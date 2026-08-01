@@ -1262,7 +1262,11 @@
 {
     RSGraphElement *obj = [_s selection];
     
-    data_p value = [[self.graph xAxis] dataValueFromFormat:[sender stringValue]];
+    data_p value;
+    if (![[self.graph xAxis] getInspectorDataValue:&value fromFormat:[sender stringValue]]) {
+        [_s sendChange:nil];  // unparseable: redisplay the real position instead of moving the point to zero
+        return;
+    }
     [self.editor changeX:value forElement:obj];
 
     if ( _textDidChange )	// a text-changed update
@@ -1276,7 +1280,11 @@
 {
     RSGraphElement *obj = [_s selection];
     
-    data_p value = [[self.graph yAxis] dataValueFromFormat:[sender stringValue]];
+    data_p value;
+    if (![[self.graph yAxis] getInspectorDataValue:&value fromFormat:[sender stringValue]]) {
+        [_s sendChange:nil];  // unparseable: redisplay the real position instead of moving the point to zero
+        return;
+    }
     [self.editor changeY:value forElement:obj];
 
     if ( _textDidChange )	// a text-changed update
