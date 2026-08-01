@@ -245,9 +245,10 @@
         [_s setHalfSelection:nil];
         
         [[[AppController sharedController] inspectorRegistry] clearInspectionSet];
-        
+
         [_tools release];
-        
+        _tools = nil;  // -currentTool would otherwise index into a freed array
+
         [pool release];  // Ensure we dealloc any lingering autoreleased objects that reference the old graph
     }
     if (editor) {
@@ -665,7 +666,14 @@
     // OBFinishPorting: This seems like too many calls into the RSGraphEditor's guts (which need to be duplicated between the Mac and iPad).
     RSGraph *graph = _editor.graph;
     RSGraphRenderer *renderer = _editor.renderer;
-    
+
+    // Nothing to draw once the editor is gone or has been invalidated.  AppKit can still run a display
+    // pass on this view after the document has been torn down (the window is closing but the view is
+    // alive until the run loop drains), and the tools below cache the editor's mapper/renderer without
+    // retaining them, so drawing at that point would touch freed objects.
+    if (!graph)
+        return;
+
     [_editor.mapper resetCurveCache];
     
     //NSLog(@"GV bounds: %f, %f, %f, %f", [self bounds].origin.x, [self bounds].origin.y, 
